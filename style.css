@@ -70,7 +70,9 @@ main {
     padding: 8px;
     margin-top: 20px;
 }
-
+.links {
+    text-decoration: Underline;
+}
 h2,h3 {
     margin: 0px;
 }
