@@ -55,21 +55,4 @@
 
         return _app;
     };
-    
-    // Add multiplayer functions to global namespace
-    window.opspark.startMultiplayer = function() {
-        if (typeof Multiplayer !== 'undefined') {
-            Multiplayer.startLocalMultiplayer();
-        }
-    };
-    
-    window.opspark.startSinglePlayer = function() {
-        if (typeof Gamification !== 'undefined') {
-            Gamification.startSinglePlayerGame();
-        }
-    };
-    
-    window.opspark.isMultiplayerActive = function() {
-        return (typeof Multiplayer !== 'undefined') && Multiplayer.isConnected();
-    };
 }(window));
