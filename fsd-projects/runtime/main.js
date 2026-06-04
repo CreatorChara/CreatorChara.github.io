@@ -85,7 +85,16 @@ $(function () {
       return;
     }
 
-    update();
+    // trigger game over if health reaches 0
+    if (health <= 0) {
+      currentAnimationType = animationTypes.frontDeath;
+      frameIndex = 0;
+    }
+
+    // skip update if death animation is playing
+    if (currentAnimationType !== animationTypes.frontDeath) {
+      update();
+    }
     render();
   }
   /*=====  End of Rendering and Physics Setup Code  ======*/
@@ -230,12 +239,10 @@ function handleHallebotPlatformCollisions() {
         continue; // we don't want to change health or score from bottom collisions
       }
 
-      // only affect health and score the first time the platform is hit
+      // only affect score the first time the platform is hit
       if (!gameObject.hitHallebot) {
         gameObject.hitHallebot = true;
         score += gameObject.contactScoreChange;
-        health += gameObject.contactHealthChange;
-        health = Math.max(0, Math.min(100, health));
       }
     }
   }
@@ -298,7 +305,7 @@ function drawScenery() {
     const sceneryType = scenery[sceneryTypeKey];
     const image =
       document.getElementById(
-        sceneryTypeKey
+        sceneryTypeKey,
       ); /* get the image for this scenery type */
     // iterate through each instance of this scenery type
     for (let i = 0; i < sceneryType.instances.length; i++) {
@@ -310,7 +317,7 @@ function drawScenery() {
         instance.x,
         instance.y ? instance.y - instance.height : groundY - instance.height,
         instance.width,
-        instance.height
+        instance.height,
       );
     }
   }
@@ -328,7 +335,7 @@ function drawInteractables() {
       entity.x,
       entity.y - entity.height,
       entity.width,
-      entity.height
+      entity.height,
     );
   }
 }
@@ -361,7 +368,7 @@ function drawProjectiles() {
       projectile.x,
       projectile.y,
       projectile.width,
-      projectile.height
+      projectile.height,
     );
   }
 }
@@ -404,11 +411,11 @@ function checkIfOnGround() {
     if (gameObject.type === "platform") {
       if (
         player.y + playerGroundCollisionHeight <=
-          gameObject.y - gameObject.height && // player bottom is below the platform top
-        player.x + player.hitBoxWidth > gameObject.x && // player right edge is past platform left edge
-        player.x < gameObject.x + gameObject.width && // player left edge is before platform right edge
+          gameObject.y - gameObject.height + 5 && // player bottom is at or above the platform top, with a small tolerance
+        player.x + player.hitBoxWidth >= gameObject.x && // player right edge is past or touching platform left edge
+        player.x <= gameObject.x + gameObject.width && // player left edge is before or touching platform right edge
         player.y + playerGroundCollisionHeight + player.speedY >=
-          gameObject.y - gameObject.height // player is moving down onto the platform
+          gameObject.y - gameObject.height - 5 // player is moving down onto the platform, with a small extra tolerance
       ) {
         player.y =
           gameObject.y - gameObject.height - playerGroundCollisionHeight; // position player on top of platform
@@ -560,7 +567,7 @@ function drawRobot() {
     player.x - player.hitDx,
     player.y - player.hitDy,
     player.width,
-    player.height
+    player.height,
   );
 }
 
@@ -667,14 +674,14 @@ function drawHUD() {
   ctx.fillText(
     `${currentLevel.name}`,
     HUD_SETTINGS.levelPosition.x,
-    HUD_SETTINGS.levelPosition.y
+    HUD_SETTINGS.levelPosition.y,
   );
 
   // Draw score
   ctx.fillText(
     `Score: ${score}`,
     HUD_SETTINGS.scorePosition.x,
-    HUD_SETTINGS.scorePosition.y
+    HUD_SETTINGS.scorePosition.y,
   );
 
   // Draw health bar
@@ -698,7 +705,7 @@ function drawHUD() {
   ctx.fillText(
     `${health.toFixed(2)}`,
     healthBarX + 5,
-    healthBarY + healthBarHeight - 5
+    healthBarY + healthBarHeight - 5,
   );
 }
 
@@ -711,7 +718,7 @@ function showGameOver() {
     canvas.width / 4,
     canvas.height / 6,
     canvas.width / 2,
-    canvas.height / 2
+    canvas.height / 2,
   );
   ctx.fillStyle = "black";
   ctx.font = "800% serif";
@@ -719,14 +726,14 @@ function showGameOver() {
     "You are dead",
     canvas.width / 4,
     canvas.height / 6 + canvas.height / 5,
-    (canvas.width / 16) * 14
+    (canvas.width / 16) * 14,
   );
   ctx.font = "500% serif";
   ctx.fillText(
     "Hit any key to restart",
     canvas.width / 4,
     canvas.height / 6 + canvas.height / 3,
-    (canvas.width / 16) * 14
+    (canvas.width / 16) * 14,
   );
   if (keyPress.any) {
     keyPress.any = false;
@@ -740,7 +747,7 @@ function showWinScreen() {
     canvas.width / 4,
     canvas.height / 6,
     canvas.width / 2,
-    canvas.height / 2
+    canvas.height / 2,
   );
   ctx.fillStyle = "white";
   ctx.font = "800% serif";
@@ -748,14 +755,14 @@ function showWinScreen() {
     "You Win!",
     canvas.width / 4,
     canvas.height / 6 + canvas.height / 5,
-    (canvas.width / 16) * 14
+    (canvas.width / 16) * 14,
   );
   ctx.font = "500% serif";
   ctx.fillText(
     "Hit any key to restart",
     canvas.width / 4,
     canvas.height / 6 + canvas.height / 3,
-    (canvas.width / 16) * 14
+    (canvas.width / 16) * 14,
   );
   if (keyPress.any) {
     keyPress.any = false;
