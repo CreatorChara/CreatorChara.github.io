@@ -411,11 +411,11 @@ function checkIfOnGround() {
     if (gameObject.type === "platform") {
       if (
         player.y + playerGroundCollisionHeight <=
-          gameObject.y - gameObject.height + 5 && // player bottom is at or above the platform top, with a small tolerance
-        player.x + player.hitBoxWidth >= gameObject.x && // player right edge is past or touching platform left edge
-        player.x <= gameObject.x + gameObject.width && // player left edge is before or touching platform right edge
+          gameObject.y - gameObject.height + 15 && // player bottom is at or above the platform top, with increased tolerance for more forgiving collision
+        player.x + player.hitBoxWidth >= gameObject.x - 10 && // player right edge is past or touching platform left edge, with extra tolerance
+        player.x <= gameObject.x + gameObject.width + 10 && // player left edge is before or touching platform right edge, with extra tolerance
         player.y + playerGroundCollisionHeight + player.speedY >=
-          gameObject.y - gameObject.height - 5 // player is moving down onto the platform, with a small extra tolerance
+          gameObject.y - gameObject.height - 15 // player is moving down onto the platform, with increased tolerance
       ) {
         player.y =
           gameObject.y - gameObject.height - playerGroundCollisionHeight; // position player on top of platform
