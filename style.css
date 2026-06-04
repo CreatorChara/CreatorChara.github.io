@@ -73,6 +73,10 @@ main {
 .links {
     text-decoration: Underline;
 }
+
+#portfolio {
+  text-decoration: underline;
+}
 h2,h3 {
     margin: 0px;
 }
