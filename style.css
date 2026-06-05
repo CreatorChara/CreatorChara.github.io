@@ -160,7 +160,7 @@ main {
   main {
     height: 100ch;
     zoom: 1.5;
-    display: grid;
+    display: flex;
   }
 
   h1 {
