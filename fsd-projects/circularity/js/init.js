@@ -20,7 +20,6 @@ var init = function (window) {
         ///////////////////
         
         // TODO 1 : Declare and initialize our variables
-        var circle;
         var circles = [];
 
 
